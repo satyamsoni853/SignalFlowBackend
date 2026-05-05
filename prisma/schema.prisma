@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Condition {
+  GREATER_THAN
+  LESS_THAN
+}
+
+enum AlertStatus {
+  active
+  triggered
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  password_hash String
+  alertRules   AlertRule[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model AlertRule {
+  id           String      @id @default(cuid())
+  user         User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id      String
+  asset_symbol String
+  condition    Condition
+  target_price Decimal     @db.Decimal(18, 8)
+  status       AlertStatus @default(active)
+  alertLogs    AlertLog[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model AlertLog {
+  id              String    @id @default(cuid())
+  rule            AlertRule @relation(fields: [rule_id], references: [id], onDelete: Cascade)
+  rule_id         String
+  triggered_price Decimal   @db.Decimal(18, 8)
+  timestamp       DateTime  @default(now())
+}
