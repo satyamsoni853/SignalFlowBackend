@@ -8,12 +8,13 @@ const INTERVAL_MS = 5000;
 let timer: ReturnType<typeof setInterval> | null = null;
 
 async function evaluate(): Promise<void> {
-  // 1. Fetch all latest prices from Redis
-  const prices = await getAllPrices();
-  if (Object.keys(prices).length === 0) {
-    console.warn('[AlertWorker] No prices in Redis yet — skipping tick');
-    return;
-  }
+  try {
+    // 1. Fetch all latest prices from Redis
+    const prices = await getAllPrices();
+    if (Object.keys(prices).length === 0) {
+      console.warn('[AlertWorker] No prices in Redis yet — skipping tick');
+      return;
+    }
 
   // 2. Fetch all active rules from DB, grouped by symbol
   const activeRules = await prisma.alertRule.findMany({
@@ -77,6 +78,9 @@ async function evaluate(): Promise<void> {
       }
     })
   );
+  } catch (err) {
+    console.error('[AlertWorker] Evaluate error (Redis down?):', err);
+  }
 }
 
 export function startAlertWorker(): void {
