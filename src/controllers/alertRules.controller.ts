@@ -1,6 +1,6 @@
 /// <reference path="../types/express.d.ts" />
 import { Request, Response } from 'express';
-import { Condition, AlertStatus } from '../generated/prisma';
+import { Condition, AlertStatus } from '@prisma/client';
 import prisma from '../lib/prisma';
 
 const VALID_CONDITIONS = Object.values(Condition);

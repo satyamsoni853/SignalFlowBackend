@@ -2,7 +2,7 @@ import prisma from '../lib/prisma';
 import { alertQueue } from '../queues/alertQueue';
 import { getAllPrices } from './priceFeed.service';
 import { isTriggered } from './alertEvaluator';
-import { AlertStatus } from '../generated/prisma';
+import { AlertStatus } from '@prisma/client';
 
 const INTERVAL_MS = 5000;
 let timer: ReturnType<typeof setInterval> | null = null;

@@ -7,14 +7,14 @@ exports.getRules = getRules;
 exports.createRule = createRule;
 exports.updateRule = updateRule;
 exports.deleteRule = deleteRule;
-const prisma_1 = require("../generated/prisma");
-const prisma_2 = __importDefault(require("../lib/prisma"));
-const VALID_CONDITIONS = Object.values(prisma_1.Condition);
-const VALID_STATUSES = Object.values(prisma_1.AlertStatus);
+const client_1 = require("@prisma/client");
+const prisma_1 = __importDefault(require("../lib/prisma"));
+const VALID_CONDITIONS = Object.values(client_1.Condition);
+const VALID_STATUSES = Object.values(client_1.AlertStatus);
 // GET /api/alert-rules
 async function getRules(req, res) {
     try {
-        const rules = await prisma_2.default.alertRule.findMany({
+        const rules = await prisma_1.default.alertRule.findMany({
             where: { user_id: req.user.userId },
             orderBy: { createdAt: 'desc' },
         });
@@ -41,13 +41,13 @@ async function createRule(req, res) {
         return;
     }
     try {
-        const rule = await prisma_2.default.alertRule.create({
+        const rule = await prisma_1.default.alertRule.create({
             data: {
                 user_id: req.user.userId,
                 asset_symbol: asset_symbol.toUpperCase(),
                 condition,
                 target_price: price,
-                status: prisma_1.AlertStatus.active,
+                status: client_1.AlertStatus.active,
             },
         });
         res.status(201).json(rule);
@@ -78,7 +78,7 @@ async function updateRule(req, res) {
     }
     try {
         // Verify ownership before updating
-        const existing = await prisma_2.default.alertRule.findUnique({ where: { id } });
+        const existing = await prisma_1.default.alertRule.findUnique({ where: { id } });
         if (!existing) {
             res.status(404).json({ error: 'Alert rule not found' });
             return;
@@ -87,7 +87,7 @@ async function updateRule(req, res) {
             res.status(403).json({ error: 'Forbidden' });
             return;
         }
-        const updated = await prisma_2.default.alertRule.update({
+        const updated = await prisma_1.default.alertRule.update({
             where: { id },
             data: {
                 ...(asset_symbol && { asset_symbol: asset_symbol.toUpperCase() }),
@@ -107,7 +107,7 @@ async function deleteRule(req, res) {
     const id = req.params.id;
     try {
         // Verify ownership before deleting
-        const existing = await prisma_2.default.alertRule.findUnique({ where: { id } });
+        const existing = await prisma_1.default.alertRule.findUnique({ where: { id } });
         if (!existing) {
             res.status(404).json({ error: 'Alert rule not found' });
             return;
@@ -116,7 +116,7 @@ async function deleteRule(req, res) {
             res.status(403).json({ error: 'Forbidden' });
             return;
         }
-        await prisma_2.default.alertRule.delete({ where: { id } });
+        await prisma_1.default.alertRule.delete({ where: { id } });
         res.status(204).send();
     }
     catch {

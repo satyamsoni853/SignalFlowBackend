@@ -1,4 +1,4 @@
-import { Condition } from '../generated/prisma';
+import { Condition } from '@prisma/client';
 
 /**
  * Returns true if the current price satisfies the alert rule condition.

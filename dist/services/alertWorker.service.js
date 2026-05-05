@@ -9,7 +9,7 @@ const prisma_1 = __importDefault(require("../lib/prisma"));
 const alertQueue_1 = require("../queues/alertQueue");
 const priceFeed_service_1 = require("./priceFeed.service");
 const alertEvaluator_1 = require("./alertEvaluator");
-const prisma_2 = require("../generated/prisma");
+const client_1 = require("@prisma/client");
 const INTERVAL_MS = 5000;
 let timer = null;
 async function evaluate() {
@@ -21,7 +21,7 @@ async function evaluate() {
     }
     // 2. Fetch all active rules from DB, grouped by symbol
     const activeRules = await prisma_1.default.alertRule.findMany({
-        where: { status: prisma_2.AlertStatus.active },
+        where: { status: client_1.AlertStatus.active },
     });
     if (activeRules.length === 0)
         return;
@@ -43,7 +43,7 @@ async function evaluate() {
             await prisma_1.default.$transaction([
                 prisma_1.default.alertRule.update({
                     where: { id: rule.id },
-                    data: { status: prisma_2.AlertStatus.triggered },
+                    data: { status: client_1.AlertStatus.triggered },
                 }),
                 prisma_1.default.alertLog.create({
                     data: {

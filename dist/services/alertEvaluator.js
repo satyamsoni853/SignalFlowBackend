@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isTriggered = isTriggered;
-const prisma_1 = require("../generated/prisma");
+const client_1 = require("@prisma/client");
 /**
  * Returns true if the current price satisfies the alert rule condition.
  */
 function isTriggered(condition, currentPrice, targetPrice) {
-    if (condition === prisma_1.Condition.GREATER_THAN)
+    if (condition === client_1.Condition.GREATER_THAN)
         return currentPrice > targetPrice;
-    if (condition === prisma_1.Condition.LESS_THAN)
+    if (condition === client_1.Condition.LESS_THAN)
         return currentPrice < targetPrice;
     return false;
 }
