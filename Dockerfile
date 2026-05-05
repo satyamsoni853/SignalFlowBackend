@@ -21,7 +21,7 @@ RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder /app/src/generated ./src/generated
+# Prisma client is now inside node_modules which is already handled by npm ci
 
 EXPOSE 4000
 CMD ["node", "dist/index.js"]
