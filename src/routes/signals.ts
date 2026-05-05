@@ -34,7 +34,7 @@ signalRouter.post('/', async (req: Request, res: Response) => {
 // DELETE /api/signals/:id
 signalRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
-    await prisma.signal.delete({ where: { id: req.params.id } });
+    await prisma.signal.delete({ where: { id: req.params.id as string } });
     res.status(204).send();
   } catch (err) {
     res.status(404).json({ error: 'Signal not found' });
